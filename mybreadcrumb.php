@@ -26,15 +26,15 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 Copyright 2020 Inforaz
 */
 
-/***************************************************²*/
-/***Création d'une fonction simple du fil d'ariane***/
+/***************************************************²*************/
+/***Création d'une fonction simple du fil d'ariane****************/
 function fil_ariane() {
     global $post;
 
-    if (!is-front_page()) {
+    if (!is_front_page()) {
         $fil = '<div id="fil">vous êtes ici : ';
         $fil.= '<a href="'.get_bloginfo('wpurl').'"';
-        $fil.= get_bloinfo('name');
+        $fil.= get_bloginfo('name');
         $fil.= '</a> > ';
 
         $parents = array_reverse(get_ancestors($_POST->ID,'page'));
@@ -49,3 +49,15 @@ function fil_ariane() {
     }
     return $fil;
 }
+
+/***************************************************²*************/
+/***Ajout du fichier style.CSS pour l'apparence du fil d'ariane***/
+function add_css() {
+    wp_register_style('my_breadcrumb', plugins_url('style.css', __FILE__));
+    wp_enqueue_style('my_breadcrumb');  
+}
+add_action('wp_enqueue_scripts', 'add_css');
+
+/***************************************************²*************/
+/***Shortcode a mettre sur les page de votre site*****************/
+add_shortcode('mybreadcrumb', 'fil_ariane');
