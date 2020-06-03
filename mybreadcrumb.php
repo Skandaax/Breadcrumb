@@ -26,12 +26,12 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 Copyright 2020 Inforaz
 */
 
-/***************************************************²*********************/
-/***On utilise une classe pour les fonctions de prmier niveau*************/
+/***************************************************²*************/
+/***On utilise une classe pour les fonctions de prmier niveau*****/
 if(! class_exists("My_Breadcrumb")) {
     class My_Breadcrumb {
-        /***************************************************²*************/
-        /***Création d'une fonction simple du fil d'ariane****************/
+/***************************************************²*************/
+/***Création d'une fonction simple du fil d'ariane****************/
         function fil_ariane() {
             global $post;
 
@@ -54,8 +54,8 @@ if(! class_exists("My_Breadcrumb")) {
             return $fil;
         }
 
-        /***************************************************²***************/
-        /***Ajout d'un fichier style.CSS pour l'apparence du fil d'ariane***/
+/***************************************************²***************/
+/***Ajout d'un fichier style.CSS pour l'apparence du fil d'ariane***/
         function add_css() {
             wp_register_style('my_breadcrumb', 
             plugins_url('style.css', __FILE__));
@@ -63,8 +63,8 @@ if(! class_exists("My_Breadcrumb")) {
 
         }
 
-        /***************************************************²***************/
-        /***Création d'un onglet dans le sous menu réglage*******************/
+/***************************************************²***************/
+/***Création d'un onglet dans le sous menu réglage******************/
         function breadcrumb_menu() {
             if (function_exists('add_options_page')) {
         add_option_page('breadcrumb', 'my_breadcrumb', 'administrator', 
@@ -109,23 +109,25 @@ if(! class_exists("My_Breadcrumb")) {
 /***************************************************²***************/
 /***On appele les hooks en dehors de la classe, pour greffer********/
 /***l'objet au core de WordPress************************************/
-/***l'objet au core de WordPress************************************/
+/***Instancier les objets*******************************************/
 if(class_exists("My_Breadcrumb")) {
     $inst_My_Breadcrumb = new My_Breadcrumb();
 }
-/***Afficher l'onglet et la page d'administration de wordpress******/
-/***Relie le css au fil d'ariane***/
 
-if(class_exists("My_Breadcrumb")) {
-    
-}
-add_action('wp_enqueue_scripts', 'add_css');
-/***************************************************²***************/
 /***Afficher l'onglet et la page d'administration de wordpress******/
-add_action('admin_menu', 'breadcrumb_menu');
+/***Relie le css au fil d'ariane************************************/
+/***Afficher l'onglet et la page d'administration de wordpress******/
+if(isset($inst_My_Breadcrumb)) {
+    add_action('admin_menu', array($inst_My_Breadcrumb, 
+    'breadcrumb_menu'));
+    add_action('wp_enqueue_scripts', 'add_css');
+}
 
 /***************************************************²***************/
 /***Shortcode a mettre sur les pages de votre site******************/
-add_shortcode('mybreadcrumb', 'fil_ariane');
+if(function_exists('add_shortcode')) {
+    add_shortcode('mybreadcrumb', array('My_Breadcrumb','fil_ariane');
+}
 
+echo My_Breadcrumb::fil_ariane();
 
