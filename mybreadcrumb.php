@@ -27,107 +27,83 @@ Copyright 2020 Inforaz
 */
 
 /***************************************************²*************/
-/***On utilise une classe pour les fonctions de prmier niveau*****/
-if(! class_exists("My_Breadcrumb")) {
-    class My_Breadcrumb {
-/***************************************************²*************/
 /***Création d'une fonction simple du fil d'ariane****************/
-        function fil_ariane() {
-            global $post;
+function fil_ariane() {
+    global $post;
 
-            if (!is_front_page()) {
-                $fil = '<div id="fil">vous êtes ici : ';
-                $fil.= '<a href="'.get_bloginfo('wpurl').'"';
-                $fil.= get_bloginfo('name');
-                $fil.= '</a> > ';
+    if (!is_front_page()) {
+        $fil = '<div id="fil">vous êtes ici : ';
+        $fil.= '<a href="'.get_bloginfo('wpurl').'"';
+        $fil.= get_bloginfo('name');
+        $fil.= '</a> > ';
 
-                $parents = array_reverse(get_ancestors($_POST->ID,'page'));
-                foreach($parents as $parent) {
-                    $fil.='<a href="' .get_permalink($parent) .'">';
-                    $fil.= get_the_title($parent);
-                    $fil.= '</a> > ';
-                }
-                    $fil.= $post->post_title;
-
-                    $fil.='</div>';
-            }
-            return $fil;
+        $parents = array_reverse(get_ancestors($_POST->ID,'page'));
+        foreach($parents as $parent) {
+            $fil.='<a href="' .get_permalink($parent) .'">';
+            $fil.= get_the_title($parent);
+            $fil.= '</a> > ';
         }
+            $fil.= $post->post_title;
 
-/***************************************************²***************/
-/***Ajout d'un fichier style.CSS pour l'apparence du fil d'ariane***/
-        function add_css() {
-            wp_register_style('my_breadcrumb', 
-            plugins_url('style.css', __FILE__));
-            wp_enqueue_style('my_breadcrumb');  
-
-        }
-
-/***************************************************²***************/
-/***Création d'un onglet dans le sous menu réglage******************/
-        function breadcrumb_menu() {
-            if (function_exists('add_options_page')) {
-        add_option_page('breadcrumb', 'my_breadcrumb', 'administrator', 
-        'breadcrumb', array('breadcrumb_page_content'));
-            }
-        }
-
-        function breadcrumb_page_content() {
-            ?>
-            <div class="wrap">
-
-            <h2>My breadcrumb (fil d'Ariane)</h2>
-        <h3>Installation et utilisation</h3>
-    
-            </div>
-
-            Pour utiliser l'extention : 
-                <ul>
-                    <li>1/ Télécharger le dossier de l'extension ans
-                le répertoire wp-content/plugins.
-                    </li>
-                    <li>2/ Activez l'extension.</li>
-                    <li>3/ Insérez la fonction PHP : 
-                        <input type="text" 
-                        value="if(function_exists('fil_ariane')) { echo fil_ariane();}"
-                        size="40" readonly="readonly"/>
-                        dans les fichiers PHP de votre thème,
-                        <br />
-                        ou utilisez le shortcode : 
-                        <input type="text" value="[breadcrumb]"
-                        readonly="readonly" />
-                    </li>
-                </ul>
-            </div>
-            <?php
-        }
-
-
+            $fil.='</div>';
     }
+    return $fil;
+}
+
+/***************************************************²***************
+****Fonction qui est appelé dans un modèle de page servant**********
+****à l'affichage du thème*****************************************/
+?>
+<div class="site-content-contain">
+
+<?php
+
+if (function_exists('fil_ariane')) {
+    echo fil_ariane();
+}
+?>
+
+<div id="content" class="site-content">
+
+<?php
+
+/***************************************************²****************
+****Ajout d'un fichier style.CSS pour l'apparence du fil d'ariane***/
+function add_css() {
+    wp_register_style('my_breadcrumb', 
+    plugins_url('style.css', __FILE__));
+    wp_enqueue_style('my_breadcrumb');  
+
+}
+
+/***************************************************²****************
+****Appeler la function do_shortcode********************************/
+if (shortcode_exists('mybreadcrumb')) {
+    echo do_shorcode('[mybreadcrumb]');
 }
 
 /***************************************************²***************/
-/***On appele les hooks en dehors de la classe, pour greffer********/
+/***On appele les hooks pour greffer********************************/
 /***l'objet au core de WordPress************************************/
-/***Instancier les objets*******************************************/
-if(class_exists("My_Breadcrumb")) {
-    $inst_My_Breadcrumb = new My_Breadcrumb();
-}
-
-/***Afficher l'onglet et la page d'administration de wordpress******/
 /***Relie le css au fil d'ariane************************************/
-/***Afficher l'onglet et la page d'administration de wordpress******/
-if(isset($inst_My_Breadcrumb)) {
-    add_action('admin_menu', array($inst_My_Breadcrumb, 
-    'breadcrumb_menu'));
     add_action('wp_enqueue_scripts', 'add_css');
-}
 
 /***************************************************²***************/
 /***Shortcode a mettre sur les pages de votre site******************/
-if(function_exists('add_shortcode')) {
-    add_shortcode('mybreadcrumb', array('My_Breadcrumb','fil_ariane');
+    add_shortcode('mybreadcrumb', 'fil_ariane');
+
+/***************************************************²***************/
+/***Onglet pour le menu de l'administration*************************/
+function add_link_menu() {
+    add_menu_page($page_title, $menu_title, $capability, $menu_slug, 
+                    $function, $icon_url, $position, 15);
 }
 
-echo My_Breadcrumb::fil_ariane();
-
+/***************************************************²***************/
+/***Créer un onglet dans le sous menu réglage***********************/
+function breadcrumb_menu() {
+    if (function_exists('add_options_page')) {
+        add_options_page('breadcrumb', 'my breadcrumb', 'administrator', 
+                            'breadcrumb', 'breadcrumb_page_content');
+    }
+}
