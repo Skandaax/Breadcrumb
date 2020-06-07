@@ -107,7 +107,7 @@ function add_link_menu() {
 /***Créer un onglet dans le sous menu réglage***********************/
 function breadcrumb_menu() {
     if (function_exists('add_options_page')) {
-        add_options_page('breadcrumb', 'my breadcrumb', 'administrator', 
+        add_options_page('breadcrumb', 'My breadcrumb', 'administrator', 
                             'breadcrumb', 'breadcrumb_page_content');
     }
 }
