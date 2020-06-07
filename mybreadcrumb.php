@@ -93,6 +93,10 @@ if (shortcode_exists('mybreadcrumb')) {
     add_shortcode('mybreadcrumb', 'fil_ariane');
 
 /***************************************************²***************/
+/***afficher l'onglet et la page dans l'administration de WordPress*/
+    add_action('admin_menu', 'breadcrumb_menu');
+
+/***************************************************²***************/
 /***Onglet pour le menu de l'administration*************************/
 function add_link_menu() {
     add_menu_page($page_title, $menu_title, $capability, $menu_slug, 
@@ -106,4 +110,35 @@ function breadcrumb_menu() {
         add_options_page('breadcrumb', 'my breadcrumb', 'administrator', 
                             'breadcrumb', 'breadcrumb_page_content');
     }
+}
+
+/***************************************************²***************/
+/***Fonction permettant d'afficher le contenu de la page************/
+function breadcrumb_page_content() {
+    ?>
+    <div class="wrap">
+        <h2>My breadcrumb (fil d'Ariane)</h2>
+    <div>
+
+    Pour utiliser l'extension : 
+        <ul>
+            <li>
+                1/ Télécharger le dossier de l'extention dans le répertoire wp-content/plugins
+            </li>
+            <li>
+                2/ Activez l'extension.
+            </li>
+            <li>
+                3/ Inserez la function PHP : <input type="text"
+                    value="if(function_exists('fil_ariane')) {echo fil_ariane(); }"
+                    size="40" readonly="readonly" />
+                    dans les fichiers PHP de votre thème,
+                    <br/>
+                    ou utilisez le shortcode : 
+                    <input type="text" value="[mybreadcrumb]" readonly="readonly" />
+            </li>
+        </ul>
+    </div>
+
+    <?php
 }
