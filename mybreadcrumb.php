@@ -5,8 +5,8 @@ Plugin Name: My Breadcrumb !
 Plugin URI: https://www.inforaz.com/developpement-web-web-mobile/
 Description: Fil d'ariane pour les articles et les pages.
 Author: Couillin Yannick
-Version 1.0
 Author URI: http:/www.inforaz.com/
+Version 1.0
 Licence: GPLv2
 
 This program is free software; you can redistribute it and/or
